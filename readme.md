@@ -29,10 +29,10 @@ Since its inception in 2018, ZonEcron Timer has offered several ways to configur
 
 Here you have 4 abailable methods to interface with a ZonEcron timer for seamless integration and efficient management. Whether you prefer WebSocket communication, RESTful APIs, or serial connection, we provide comprehensive guides for each approach. Choose the method that best fits your needs and effortlessly integrate your ZonEcron timer into your software.
 
-[ZonEcron as websocket server](WebsocketServer.md)
-[ZonEcron as websocket client](WebsocketClient.md)
-[ZonEcron REST server](RESTserver.md)
-[ZonEcron over serial](Serial.md)
+- [1. ZonEcron as websocket server](WebsocketServer.md)
+- [2. ZonEcron as websocket client](WebsocketClient.md)
+- [3. ZonEcron REST server](RESTserver.md)
+- [4. ZonEcron over serial](Serial.md)
 
 
 
