@@ -89,7 +89,7 @@ Example of response of timer running with eladsed time 21.5 secconds and 2 fault
 ```json
 {
     "timerID": "00:1A:22:XX:XX:XX",
-    "course_time": 21500,
+    "time": 21500,
     "running": true,
     "countdown": false,
     "coursewalk": false,
