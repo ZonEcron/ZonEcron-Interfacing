@@ -1,14 +1,6 @@
-# ZONECRON TIMER INTERFACING
-
-This document describes the message formats sent over websockets to interface a ZonEcron timer or ZonEcron APP.
- - Visit us https://www.zonecron.com
- - Insult us https://facebook.com/zonecron
- - Write us zonecron@zonecron.com
-
-------------------------------------------------------------------------------------------------------------------------
+# ZONECRON TIMER AS WEBSOCKET SERVER
 
 ## Contents
-- [Context and introduction](#Context-and-introduction)
 - [Conecting timer and software](#Conecting-timer-and-software)
 - [Message diagram](#Message-diagram)
 - [Messages sumary table](#Messages-sumary-table)
@@ -17,23 +9,31 @@ This document describes the message formats sent over websockets to interface a 
 - [Software to Timer Examples](#Software-to-Timer-Examples)
 - [Keeping Connection Alive](#keeping-connection-alive)
 
-------------------------------------------------------------------------------------------------------------------------
-
-## Context and introduction
-Since its inception in 2019, ZonEcron Timer has featured a WebSocket-based web interface for configuring and operating the timer. As new competition management platforms were developed, the need arose to eliminate human error in transcribing timing results. Additionally, it became imperative to provide the helper team with remote control of the timer integrated with the platform, thus avoiding the need to manage multiple screens simultaneously. In this context, we decided to make public our telegram system between the timer and its web interface, therefor allowing platforms to interface directly with the timer.
-
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 ## Conecting timer and software
 
-This document will describe the protocol to use when Timer acts as websocket server (running on timer's port 81). 
-The timer can also act as a websocket client. In that case, the protocol is slightly different since it was designed to work in conjunction with the [Flow Agility](https://www.flowagility.com/) platform. You can check the details of that protocol in it's repository: https://github.com/flowagility/timer
+The timer has a WebSocket server running on port 81. This connection is not encrypted because it is intended for local network communication, where network security is ensured and encryption is not deemed necessary. This setup is ideal for applications requiring low latency and fast communication between devices within the same network.
 
-Once the connection is established, the software should send a message with "d0" to request the update of the timer state.
-The timer will respond with a actual status message.
-Regardless of whether a "d0" message is sent or not, the timer will send a new message every time an event occurs (start, stop, ...).
+Once the connection is established, the software should send a message with "d0" to request the update of the timer state. The timer will respond with an actual status message. Regardless of whether a "d0" message is sent or not, the timer will send a new message every time an event occurs (start, stop, coursewalk runout, etc.).
 
-------------------------------------------------------------------------------------------------------------------------
+Below is an example of JavaScript code that can be run from an HTML file to connect to the timer, assuming it has the IP address 192.168.1.100:
+
+
+´´´javascript
+const socket = new WebSocket('ws://192.168.1.100:81');    // Create a new instance of WebSocket
+
+socket.onopen = function(event) {                         // Event when the connection opens
+    console.log('Connected to timer.');
+    socket.send('d0');                                    // Request timer status update
+};
+
+socket.onmessage = function(event) {                      // Event when a message is received
+    console.log('Received: ', event.data);
+};
+´´´
+
+----------------------------------------------------------------------------------------------------
 
 ## Message diagram
 All messages begin with a letter indicating the type of information and have a fixed length of 11 characters except the "d0" update request:
@@ -54,7 +54,7 @@ i 2 1 0 0036597
 └───────────────> timer running
 ```
 
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 ## Messages sumary table
 
@@ -68,7 +68,7 @@ i 2 1 0 0036597
 |    p    | p0000000000 | time stopped with F+R+E + elapsed (or reset if all digits == 0 )      |
 |    q    | q0000015000 | countdown stopped (timer showing 15s. ready yo start countdown)       |
 
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 ## Admissible messages 
 
@@ -109,14 +109,14 @@ From each mode the following changes are supported:
 |        |     q    |  F-R-E   |           | score F-R-E                              |
 |        |          |          |    r>0    | timer starts and ignores first detection |
 
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 ## Timer to software examples 
 Messages that can be sent by the timer:
   - `i0000002000` - timer running. Actual elapsed time is 2000 ms. -> 2 s. 
   - `p2100028654` - timer stoped. Score is 2 faults, 1 refusals, not eliminated and 28.654 s.
   
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 ## Software to timer examples
 Messages that can be received by the timer:
@@ -127,7 +127,7 @@ Messages that can be received by the timer:
   - `g0004200000` - Start or resume coursewalk time 
   - `p0000000000` - Reset
 
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 ## Keeping Connection Alive
 

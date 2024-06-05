@@ -1,0 +1,1 @@
+The timer can also act as a websocket client. In that case, the protocol is slightly different since it was designed to work in conjunction with the [Flow Agility](https://www.flowagility.com/) platform. You can check the details of that protocol in it's repository: https://github.com/flowagility/timer
