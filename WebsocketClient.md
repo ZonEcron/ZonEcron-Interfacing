@@ -139,7 +139,7 @@ Allowed messages and changes in the timer's current mode are as follows:
 
 ----------------------------------------------------------------------------------------------------
 
-## 6. Timer to software examples 
+## 7. Timer to software examples 
 Messages that can be sent by the timer:
   - `i0000002000` - timer running. Actual elapsed time is 2000 ms. -> 2 s. 
   - `#i2100036597` - response with infromation shown on the running timer at the moment of the request
@@ -148,7 +148,7 @@ Messages that can be sent by the timer:
   
 ----------------------------------------------------------------------------------------------------
 
-## 7. Software to timer examples
+## 8. Software to timer examples
 Messages that can be received by the timer:
   - `d0` - status request. Response should be pre-pended by `#` symbol. For example, if the timer is running, then response should be `#i2100036597`
   - `i2100000000` - If timer is running, 2 faults and 1 refusal will be scored on display (time is ignored)
