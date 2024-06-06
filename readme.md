@@ -8,7 +8,8 @@ This document describes the ways to interface a ZonEcron timer.
 
 ## Contents
 - [1. Introduction and context](#1-Introduction-and-context)
-- [2. Four ways to interface with a ZonEcron timer](#2-Four-ways-to-interface-with-a-ZonEcron-timer)
+- [2. Introduction and context](#2-Introduction-and-context)
+- [3. Four ways to interface with a ZonEcron timer](#3-Four-ways-to-interface-with-a-ZonEcron-timer)
 
 
 ----------------------------------------------------------------------------------------------------
@@ -25,7 +26,19 @@ Since its inception in 2018, ZonEcron Timer has offered several ways to configur
 
 ----------------------------------------------------------------------------------------------------
 
-## 2 Four ways to interface with a ZonEcron timer
+## 2. Information Flow
+
+The following outlines the flow of information within the system, detailing the interactions between the software and the timer.
+
+- The timer sends messages when a dog crosses the start gates and the finish gates.
+- The timer also sends information when the time for a course walk countdown or course start countdown expires.
+- The software can send information on Faults, Refusals, and Eliminations.
+- The software can initiate a course walk countdown or a course start countdown.
+- The software can reset the timer at any moment.
+ 
+----------------------------------------------------------------------------------------------------
+
+## 3 Four ways to interface with a ZonEcron timer
 
 Here you have 4 abailable methods to interface with a ZonEcron timer for seamless integration and efficient management. Whether you prefer WebSocket communication, RESTful APIs, or serial connection, we provide comprehensive guides for each approach. Choose the method that best fits your needs and effortlessly integrate your ZonEcron timer into your software.
 
@@ -33,6 +46,3 @@ Here you have 4 abailable methods to interface with a ZonEcron timer for seamles
 - [2. ZonEcron as websocket client](WebsocketClient.md)
 - [3. ZonEcron REST server](RESTserver.md)
 - [4. ZonEcron over serial](Serial.md)
-
-
-

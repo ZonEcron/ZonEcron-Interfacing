@@ -1,91 +1,161 @@
 # ZONECRON TIMER AS WEBSOCKET CLIENT
 
 ## Description
-The timer can act as a websocket client. In that case, the protocol is slightly different from the one that is used when timer is websocket server. This is so because this feature was designed to work in conjunction with the [Flow Agility](https://www.flowagility.com/) platform. You can check the details of that protocol in it's repository: https://github.com/flowagility/timer
 
+The timer can work as a WebSocket client. Therefore, the software will need to set up a WebSocket server.
+
+Working as websocket client, the messages used, are basically the same used when the timer is a websocket server but with some details that must be taken into account. We recommend to read the documentation carefully
+
+This variation is due to the feature being designed to work in conjunction with the [Flow Agility](https://www.flowagility.com/) software. You can check [their repository](https://github.com/flowagility/timer), where you will find information similar to what is provided here.
+
+----------------------------------------------------------------------------------------------------
 
 ## Contents
-- [General concept](#general-concept)
-- [Connecting Timer and Platform](#connecting-timer-and-platform)
-- [Keeping Connection Alive](#keeping-connection-alive)
-- [11(+1) Symbols Message Format](#111-symbols-message-format)
-- [Platform to Timer Communication](#platform-to-timer-communication)
-- [Timer to Platform Communication](#timer-to-platform-communication)
+- [1. Connecting Timer and Software](#1-Connecting-Timer-and-Software)
+- [2. Keeping Connection Alive](#2-Keeping-connection-alive)
+- [3. Message diagram](#3-Message-Diagram)
+- [4. Mode Meanings and Examples](#4-Mode-Meanings-and-Examples)
+- [5. Message Exchange](#5-Message-Exchange)
+- [6. Timer Accepted Messages](#6-Timer-Accepted-Messages)
+- [7. Timer to Software Examples](#7-Timer-to-Software-Examples)
+- [8. Software to Timer Examples](#8-Software-to-Timer-Examples)
 
-## General concept
-FlowAgility platform is supporting timer integration in an experimental mode at the moment. Communication is supported based mainly on 11 symbols codes with few exceptions. Timer is connecting to the platform automatically, sending its unique Mac Address. Platform is openning a communication channel for a specific Ring and Date. Further commincation is done via web socket. Platform is sending an information on Faults, Refusals and Eliminations, while timer is sending the message when dog is crossing an entrance gates and also the exit gates. Platform can also initiate a Course Walk countdown. Platform can reset timer at any moment.
+----------------------------------------------------------------------------------------------------
 
-## Connecting Timer and Platform
-To connect the timer to a platform, the platform should be set into a listening mode, by providing the Mac Address of a timer. This can be done inside of the run views. After the timer Mac Address is entered, the platform is waiting for the timer to connect. Timer should then initiate connection to a specific URL (https://flowagility.com/ws/timer/mac_address - where mac_address is a Mac Address of the timer). Timer should try to connect to the platform with series of 5, 10, 30 and 60 seconds intervals (3-5 attempts in a series).
+## 1. Connecting Timer and Software
 
-As soon as timer is connected, the platform is ready to receive signals from the timer.
+To connect the timer to the software that will act as the WebSocket server, you need to configure the timer through its web interface. In that interface adrres, path and port can be configured as well as type of server
 
-Eveytime the user is loading the page which is able to track timer connection, the platform is sending a status request to the timer and is awaiting for the response with a current state. 
+To connect the timer to a software, the software should be set into a listening mode, by providing the Mac Address of a timer. This can be done inside of the run views. After the timer Mac Address is entered, the software is waiting for the timer to connect. Timer should then initiate connection to a specific URL (https://flowagility.com/ws/timer/mac_address - where mac_address is a Mac Address of the timer). 
 
-Pages, which are monitoring the timer connection, are usually tracking the following events:
-- Status report
-- Timer start
-- Timer stop
-- Course walk start
-- Course walk stop
-- Timer connection dropped
+Timer should try to connect to the software with series of 5, 10, 30 and 60 seconds intervals (3-5 attempts in a series).
 
-## Keeping Connection Alive
-Timer is responcible for keeping connection alive, using an appropriate `ping` command.
+As soon as timer is connected, the software is ready to receive signals from the timer.
 
-## 11(+1) Symbols Message Format
-Reguilar message from the timer consists of 11 symbols (1 alpha-code and 10 digits).
-Alpha codes are the following:
-  - `g` - start of a Course Walk with a given time
-  - `i` - timer running with F+R+E information
-  - `o` - stop of a Course Walk
-  - `p` - timer stopped with F+R+E information
-  - `l` - request for the run length
- 
-Digital codes are the following
-  - 1 digit - Number of Faults (0..9)
-  - 2 digit - Number of Refusals (0..9)
-  - 3 digit - No elimination is `0`. Eliminated is `1`
-  - 7 digits: elapsed millisecond (so max elapsed will be 9999 secs)
+Eveytime the user is loading the page which is able to track timer connection, the software is sending a status request to the timer and is awaiting for the response with a current state. 
 
-Example:
+----------------------------------------------------------------------------------------------------
+
+## 2. Keeping Connection Alive
+
+The timer is capable of responding to heartbeats from the server in accordance with RFC 6455 specifications (sections 5.5.2 and 5.5.3), allowing the software to monitor the status of the timer client's connection. 
+Additionally, the timer will reply to messages containing 'ping' with a corresponding 'pong' message, enabling the software to implement custom heartbeat management if necessary.
+
+----------------------------------------------------------------------------------------------------
+
+## 3. Message Diagram
+
+All messages begin with a letter indicating the type of information and have a fixed length of 11 characters except for the "d0" update request:
+
+- 1 letter: "g", "i", "s", "o", "p", or "q"
+- 1 digit: number of faults
+- 1 digit: number of refusals
+- 1 digit: elimination status: not eliminated (0) or eliminated (1)
+- 7 digits: elapsed time in milliseconds (so the maximum elapsed time will be 9999 seconds).
+
 ```text
-  i2100036597
-  ││││└──┬──┘
-  ││││   └────> 36597 milliseconds
-  │││└────────> not eliminated
-  ││└─────────> 1 refusal
-  │└──────────> 2 faults
-  └───────────> timer real time info message		
+i 1 2 0 0031841
+│ │ │ │ └──┬──┘
+│ │ │ │    └────> 31841 milliseconds
+│ │ │ └─────────> not eliminated
+│ │ └───────────> 2 refusal
+│ └─────────────> 1 fault
+└───────────────> timer running
 ```
 
-Response from the Timer is always pre-pended by a `#`symbol. Example above in case of the response, should look like this `#i2100036597`.
-When platform is sending information about faults, refusals of eliminations, timer should respond the same F+R+E and also current time in milliseconds.
+----------------------------------------------------------------------------------------------------
 
+## 4. Mode Meanings and Examples
 
-## Platform to Timer Communication
-The following commands are send by the platform:
-  - `d0` - status request. Response should be pre-pended by `#` symbol. For example, if the timer is running, then response should be `#i2100036597`
-  - `i1000000000` - reporting 1st fault while timer is running (timer should be ignored by the timer)
-  - `i2000000000` - reporting 2nd fault while timer is running
-  - `i0100000000` - reporting 1st refusal while timer is running
-  - `i0200000000` - reporting 2nd refusal while timer is running
-  - `i0010000000` - reporting elimination (pure elimination or elimination by Refusals or Elimination by MCT)
-  - `o0004200000` - setting or pausing the Course Walk time (default is 7 minutes)
-  - `g0004200000` - starting ot resuming the Course Walk time 
-  - `p0000000000` - timer reset
-  - `l0000221000` - length of current run in millimetres (e.g. 221000 mm = 221 m)
-  - `l0000000000` - current run length is not set
-  - `A.B.C` - version response of the platform, where A is the major, B minor, C revision of the current version of the cupported API.
-  - `pong` - response to `ping` command from Timer
+These are the modes the timer can be in, or can be asked to switch to:
 
-## Timer to Platform Communication 
-The following commands are send by the timer:
-  - `#..........` - responce with the current timer state should be pre-pended by the `#` symbol and should follow 11 symbols format
-  - `i0000000000` - timer start
+- "g": Course walk countdown running.
+- "i": Timer running.
+- "p": Timer stopped.
+- "s": Course start countdown running.
+- "o": Course walk countdown stopped.
+- "q": Course start countdown stopped.
+
+"p" and "i" are the normal modes, which the timer is in most of the time.
+
+"o" and "g" are course walk modes. Course walk is the time allocated for handlers to inspect the course layout and plan their strategy. The default time is 7 minutes (420 seconds).
+
+"s" and "q" are course start modes. Course start is the maximum time for handlers to begin the course once the judge signals. The default time is 15 seconds. This is not commonly used, typically reserved for international competitions like the EO (European Open) or the AWC (Agility World Championship).
+
+Below, there is an example of a message for each mode along with its meaning:
+
+| Letter  |   Example   | Meaning                                                               |
+|---------|-------------|-----------------------------------------------------------------------|
+|    d    |     d0      | Status update request                                                 |
+|    g    | g0000312045 | Course walk countdown running, time left: 312 s. = 5 min. 12 s.       |
+|    i    | i2100023218 | Timer running with 2 faults, 1 refusal, not Eliminated, and 23.218 s. |
+|    s    | s0000008451 | Course start countdown running, time left: 8.451 s.                   |
+|    o    | o0000420000 | Course walk countdown stopped, ready to start with 420 s. -> 7 min.   |
+|    p    | p0000000000 | Timer stopped, 0 faults, 0 refusals, 0 elim, and 0 time -> reset      |
+|    q    | q0000015000 | Course start countdown stopped, ready to start with 15 seconds        |
+
+----------------------------------------------------------------------------------------------------
+
+## 5. Message Exchange
+
+Both the timer and the software can exchange messages with each other. Upon receiving a message, the recipient must respond with the same message, prefixed with "#" if it has been accepted, or with a message indicating its current mode, prefixed with "!".
+
+For example, when the software sends information about faults, refusals, or eliminations to the timer, the timer should respond with the same F+R+E, followed by the current time in milliseconds, prefixed with "#" if it has been accepted, or with a message indicating its current mode, prefixed with "!".
+
+----------------------------------------------------------------------------------------------------
+
+## 6. Timer Accepted Messages
+
+Depending on the timer's current mode, it may not always accept scores or elapsed times. For example:
+- In "time running" mode "i", it will accept scores but not elapsed time. It is not possible to modify the counting time or stop the timer with a specific time.
+- In "coursewalk running" mode "g", any values for faults, refusals, or eliminations are discarded and just elapsed time is taken into account.
+
+Allowed messages and changes in the timer's current mode are as follows:
+- A reset is allowed in any mode. The reset command is "p0000000000", which stops the timer and resets the faults, refusals, eliminations, and time to zero.
+- From a reset state, the timer can transition to "g", "s", "o", and "q". (The timer cannot be started or stopped with commands; it relies on its own photocells.)
+- For each current mode, the timer accepts incoming telegram information according to the following table, other information or telegrams are rejected:
+
+| ACTUAL | INCOMING | ADMITTED | CONDITION | ACTIONS                                  |
+|--------|----------|----------|-----------|------------------------------------------|
+|   g    |     g    |   time   |           | modify remaining coursewalk time         |
+|        |     o    |   time   |           | pause coursewalk with indicated time     |
+|        |          |          |           |                                          |
+|   i    |     i    |  F-R-E   |           | score F-R-E                              |
+|        |          |          |           |                                          |
+|   s    |     s    |  F-R-E   |           | score F-R-E                              |
+|        |          |          |    r>0    | timer starts and ignores first detection |
+|        |          |          |           |                                          |
+|   o    |     g    |   time   |           | start coursewalk with indicated time     |
+|        |     o    |   time   |           | modify coursewalk time                   |
+|        |          |          |           |                                          |
+|   p    |     q    |   time   |           | ready to countdown with indicated time   |
+|        |     p    |  F-R-E   |           | score F-R-E                              |
+|        |          |          | t=0 & r>0 | timer starts and ignores first detection |
+|        |          |          |           |                                          |
+|   q    |     s    |   mode   |           | start countdown                          |
+|        |     q    |   time   |           | modify countdown time                    |
+|        |     q    |  F-R-E   |           | score F-R-E                              |
+|        |          |          |    r>0    | timer starts and ignores first detection |
+
+----------------------------------------------------------------------------------------------------
+
+## 6. Timer to software examples 
+Messages that can be sent by the timer:
+  - `i0000002000` - timer running. Actual elapsed time is 2000 ms. -> 2 s. 
   - `#i2100036597` - response with infromation shown on the running timer at the moment of the request
-  - `p2100036597` - timer stoped with 2 faults, 1 refusals, not eliminated and with 36.597 seconds
-  - `l0000000000` - request for the length of the current run
-  - `version` - request for an API version
-  - `ping` - ping message to a platform, that should receive `pong` as a response
+  - `p2100028654` - timer stoped. Score is 2 faults, 1 refusals, not eliminated and 28.654 s.
+  - `ping` - ping message to a software, that should receive `pong` as a response
   
+----------------------------------------------------------------------------------------------------
+
+## 7. Software to timer examples
+Messages that can be received by the timer:
+  - `d0` - status request. Response should be pre-pended by `#` symbol. For example, if the timer is running, then response should be `#i2100036597`
+  - `i2100000000` - If timer is running, 2 faults and 1 refusal will be scored on display (time is ignored)
+  - `#i2100000000` - response with infromation shown on the running timer at the moment of the request
+  - `p0010000000` - If timer is stopped, elimination will be scored on display (time is ignored)
+  - `o0004200000` - Set or pause coursewalk time
+  - `g0004200000` - Start or resume coursewalk time 
+  - `p0000000000` - Reset
+  - `pong` - response to `ping` command from Timer
+ 
