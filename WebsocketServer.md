@@ -6,7 +6,7 @@ The timer can work as a WebSocket server. Therefore, the software will need to a
 
 Working as websocket server, the messages used, are basically the same used when the timer is a websocket client but with some details that must be taken into account. We recommend to read the documentation carefully
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## Contents
 - [1. Connecting Timer and Software](#1-Connecting-Timer-and-Software)
@@ -18,7 +18,7 @@ Working as websocket server, the messages used, are basically the same used when
 - [7. Timer to Software Examples](#7-Timer-to-Software-Examples)
 - [8. Software to Timer Examples](#8-Software-to-Timer-Examples)
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 1. Connecting Timer and Software
 
@@ -41,7 +41,7 @@ socket.onmessage = function(event) {                      // Event when a messag
 };
 ```
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 2. Keeping Connection Alive
 
@@ -49,7 +49,7 @@ The timer will use heartbeats to track whether the client is alive according to 
 Additionally, the timer will send a message containing "__ping__" every 5 seconds for browsers to keep track of the server's status. Use it as needed.
 
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 3. Message Diagram
 
@@ -71,7 +71,7 @@ i 1 2 0 0031841
 └───────────────> timer running
 ```
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 4. Mode Meanings and Examples
 
@@ -102,7 +102,7 @@ Below, there is an example of a message for each mode along with its meaning:
 |    p    | p0000000000 | Timer stopped, 0 faults, 0 refusals, 0 elim, and 0 time -> reset      |
 |    q    | q0000015000 | Course start countdown stopped, ready to start with 15 seconds        |
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 5. Message Exchange
 
@@ -110,7 +110,7 @@ Both the timer and the software can exchange messages with each other. Confirmat
 
 For instance, if the timer is running ("i" mode), when the software sends information about faults, refusals, or eliminations to the timer, the timer will broadcast back the same faults, refusals, and eliminations, but it will ignore any received time and send the message with the current time.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 6. Timer Accepted Messages
 
@@ -145,7 +145,7 @@ Allowed messages and changes in the timer's current mode are as follows:
 |        |     q    |  F-R-E   |           | score F-R-E                              |
 |        |          |          |    r>0    | timer starts and ignores first detection |
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 7. Timer to Software Examples 
 Messages that can be sent by the timer:
@@ -154,7 +154,7 @@ Messages that can be sent by the timer:
   - `p0000000000` - Reset (e.g., after course walk countdown runs out).
   - `__ping__` - Ping message to all clients every 5 seconds.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 8. Software to Timer Examples
 Messages that can be received by the timer:

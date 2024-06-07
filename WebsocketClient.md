@@ -8,7 +8,7 @@ Working as websocket client, the messages used, are basically the same used when
 
 This variation is due to the feature being designed to work in conjunction with the [Flow Agility](https://www.flowagility.com/) software. You can check [their repository](https://github.com/flowagility/timer), where you will find information similar to what is provided here.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## Contents
 - [1. Connecting Timer and Software](#1-Connecting-Timer-and-Software)
@@ -20,7 +20,7 @@ This variation is due to the feature being designed to work in conjunction with 
 - [7. Timer to Software Examples](#7-Timer-to-Software-Examples)
 - [8. Software to Timer Examples](#8-Software-to-Timer-Examples)
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 1. Connecting Timer and Software
 
@@ -34,14 +34,14 @@ As soon as timer is connected, the software is ready to receive signals from the
 
 Eveytime the user is loading the page which is able to track timer connection, the software is sending a status request to the timer and is awaiting for the response with a current state. 
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 2. Keeping Connection Alive
 
 The timer is capable of responding to heartbeats from the server in accordance with RFC 6455 specifications (sections 5.5.2 and 5.5.3), allowing the software to monitor the status of the timer client's connection. 
 Additionally, the timer will reply to messages containing 'ping' with a corresponding 'pong' message, enabling the software to implement custom heartbeat management if necessary.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 3. Message Diagram
 
@@ -63,7 +63,7 @@ i 1 2 0 0031841
 └───────────────> timer running
 ```
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 4. Mode Meanings and Examples
 
@@ -94,7 +94,7 @@ Below, there is an example of a message for each mode along with its meaning:
 |    p    | p0000000000 | Timer stopped, 0 faults, 0 refusals, 0 elim, and 0 time -> reset      |
 |    q    | q0000015000 | Course start countdown stopped, ready to start with 15 seconds        |
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 5. Message Exchange
 
@@ -102,7 +102,7 @@ Both the timer and the software can exchange messages with each other. Upon rece
 
 For example, when the software sends information about faults, refusals, or eliminations to the timer, the timer should respond with the same F+R+E, followed by the current time in milliseconds, prefixed with "#" if it has been accepted, or with a message indicating its current mode, prefixed with "!".
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 6. Timer Accepted Messages
 
@@ -137,7 +137,7 @@ Allowed messages and changes in the timer's current mode are as follows:
 |        |     q    |  F-R-E   |           | score F-R-E                              |
 |        |          |          |    r>0    | timer starts and ignores first detection |
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 7. Timer to software examples 
 Messages that can be sent by the timer:
@@ -146,7 +146,7 @@ Messages that can be sent by the timer:
   - `p2100028654` - timer stoped. Score is 2 faults, 1 refusals, not eliminated and 28.654 s.
   - `ping` - ping message to a software, that should receive `pong` as a response
   
-----------------------------------------------------------------------------------------------------
+---
 
 ## 8. Software to timer examples
 Messages that can be received by the timer:

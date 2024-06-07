@@ -8,7 +8,7 @@ To facilitate this communication, a [ZonEcron dongle](https://www.zonecron.com/e
 
 This dongle will communicate with the large display and/or the cells directly. In case the large display is not available, this accessory is the only way to interact with the timer, as the web server enabling other forms of communication resides in the large display. Therefore, using this dongle provides basic connectivity and control with or without the large display unit.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## Contents
 - [1. Connecting Timer and Software](#1-connecting-timer-and-software)
@@ -18,19 +18,19 @@ This dongle will communicate with the large display and/or the cells directly. I
 - [5. Message Exchange](#5-message-exchange)
 - [6. Timer Accepted Messages](#6-timer-accepted-messages)
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 1. Connecting Timer and Software
 
 The ZonEcron timer's serial communication should be established using a baud rate of 56000 in older versions or 38400 from version 2.7.0 and newer. Use 8 data bits, no parity, and 1 stop bit (8N1). Once the dongle is connected via USB and recognized as a serial port by the operating system, any serial communication software can be used to interact with the timer.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 2. Keeping Connection Alive
 
 The ZonEcron dongle ensures robust and reliable data transmission even in challenging environments. The dongle communicates wirelessly with the timer using a proprietary protocol, ensuring that the connection remains stable. There are no special requirements other than ensuring that the software keeps the serial port open and listening.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 3. Message Diagram
 
@@ -46,7 +46,7 @@ For readability purposes, the terminating line feed character will not be shown 
 Example of command with parameter:
 `DATA 2:1:0`: Scores 2 faults, 1 refusal, and not eliminated.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 4. Message Meanings and Examples
 
@@ -77,7 +77,7 @@ Examples:
 - `FAIL`: Indicates that a photocell is in alarm. This message will repeat every 5 seconds until the alarm is corrected.
 - `OK`: Clears the FAIL state, indicating that all cells are okay.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 5. Message Exchange
 
@@ -87,7 +87,7 @@ Timer can send this commands to software: `START`, `STOP`, `DATA`, `RESET`, `WAL
 
 Software can send this commands to timer: `STATUS`, `DATA`, `RESET`, `WALK` and `DOWN`.
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 6. Timer Accepted Messages
 
@@ -101,7 +101,7 @@ Allowed messages and changes in the timer's current mode are as follows:
 - For each current mode, the timer accepts incoming command information according to the following table, other commands are rejected:
 
 | ACTUAL | INCOMING | ADMITTED | CONDITION | ACTIONS                                  |
-|--------|----------|----------|-----------|------------------------------------------|
+|---|---|---|---|---|
 | RESET  |  DATA    |  F-R-E   |    r>0    | timer starts and ignores first detection |
 |        |  WALK    |  time    |           | modify remaining coursewalk time         |
 |        |  DOWN    |  time    |           | start countdown with indicated time      |
@@ -115,5 +115,5 @@ Allowed messages and changes in the timer's current mode are as follows:
 |        |          |          |           |                                          |
 | DOWN   |  DATA    |  F-R-E   |    r>0    | timer starts and ignores first detection |
 
-----------------------------------------------------------------------------------------------------
+---
 

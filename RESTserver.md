@@ -9,7 +9,7 @@ It's important to note that, to maintain optimal server performance, it's recomm
 - [2. GET XML](#2-get-xml)
 - [3. GET JSON](#3-get-json)
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 1. Timer Actions
 
@@ -37,7 +37,7 @@ It's important to note that, to maintain optimal server performance, it's recomm
      PUT /action?reset=1 HTTP/1.1
      ```
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 2. GET XML
 
@@ -68,7 +68,7 @@ Example of response of timer running with elapsed time 21.5 secconds and 2 fault
 </xml>
 ```
 
-----------------------------------------------------------------------------------------------------
+---
 
 ## 3. GET JSON
 
