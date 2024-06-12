@@ -123,27 +123,22 @@ Allowed messages and changes in the timer's current mode are as follows:
 - From a reset state, the timer can transition to "g", "s", "o", and "q". (The timer cannot be started or stopped with commands; it relies on its own photocells.)
 - For each current mode, the timer accepts incoming telegram information according to the following table, other information or telegrams are rejected:
 
-| ACTUAL | INCOMING | ADMITTED | CONDITION | ACTIONS                                  |
-|--------|----------|----------|-----------|------------------------------------------|
-|   g    |     g    |   time   |           | modify remaining coursewalk time         |
-|        |     o    |   time   |           | pause coursewalk with indicated time     |
-|        |          |          |           |                                          |
-|   i    |     i    |  F-R-E   |           | score F-R-E                              |
-|        |          |          |           |                                          |
-|   s    |     s    |  F-R-E   |           | score F-R-E                              |
-|        |          |          |    r>0    | timer starts and ignores first detection |
-|        |          |          |           |                                          |
-|   o    |     g    |   time   |           | start coursewalk with indicated time     |
-|        |     o    |   time   |           | modify coursewalk time                   |
-|        |          |          |           |                                          |
-|   p    |     q    |   time   |           | ready to countdown with indicated time   |
-|        |     p    |  F-R-E   |           | score F-R-E                              |
-|        |          |          | t=0 & r>0 | timer starts and ignores first detection |
-|        |          |          |           |                                          |
-|   q    |     s    |   mode   |           | start countdown                          |
-|        |     q    |   time   |           | modify countdown time                    |
-|        |     q    |  F-R-E   |           | score F-R-E                              |
-|        |          |          |    r>0    | timer starts and ignores first detection |
+| ACTUAL | INCOMING | ADMITTED | ACTIONS                                                       |
+|--------|----------|----------|---------------------------------------------------------------|
+|   g    |    g     |   time   | modify remaining coursewalk time                              |
+|   g    |    o     |   time   | pause coursewalk, modify remaining coursewalk time            |
+|--------|----------|----------|---------------------------------------------------------------|
+|   i    |    i     |  F-R-E   | score F-R-E                                                   |
+|--------|----------|----------|---------------------------------------------------------------|
+|   s    |    s     |    R-E   | score R-E, if R>0, timer starts and ignores first detection   |
+|--------|----------|----------|---------------------------------------------------------------|
+|   o    |    g     |   time   | start coursewalk, modify remaining coursewalk time            |
+|   o    |    o     |   time   | modify remaining coursewalk time                              |
+|--------|----------|----------|---------------------------------------------------------------|
+|   p    |    p     |  F-R-E   | score F-R-E                                                   |
+|--------|----------|----------|---------------------------------------------------------------|
+|   q    |    s     | time - E | start countdown with elapsed time, score E                    |
+|   q    |    q     | time - E | modify countdown time, score E                                |
 
 ---
 
