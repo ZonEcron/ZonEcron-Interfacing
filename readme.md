@@ -45,3 +45,4 @@ Here you have four available methods to interface with a ZonEcron timer for seam
 - [2. ZonEcron as WebSocket Client](WebsocketClient.md)
 - [3. ZonEcron REST Server](RESTserver.md)
 - [4. ZonEcron over Serial](Serial.md)
+

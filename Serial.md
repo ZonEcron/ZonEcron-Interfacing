@@ -101,7 +101,7 @@ Allowed messages and changes in the timer's current mode are as follows:
 - For each current mode, the timer accepts incoming command information according to the following table, other commands are rejected:
 
 | ACTUAL | INCOMING | ADMITTED | CONDITION | ACTIONS                                  |
-|---|---|---|---|---|
+|--------|----------|----------|-----------|------------------------------------------|
 | RESET  |  DATA    |  F-R-E   |    r>0    | timer starts and ignores first detection |
 |        |  WALK    |  time    |           | modify remaining coursewalk time         |
 |        |  DOWN    |  time    |           | start countdown with indicated time      |
@@ -114,6 +114,3 @@ Allowed messages and changes in the timer's current mode are as follows:
 | WALK   |  WALK    |  time    |           | modify remaining coursewalk time         |
 |        |          |          |           |                                          |
 | DOWN   |  DATA    |  F-R-E   |    r>0    | timer starts and ignores first detection |
-
----
-

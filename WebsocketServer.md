@@ -153,7 +153,7 @@ Messages that can be sent by the timer:
 
 ## 8. Software to Timer Examples
 Messages that can be received by the timer:
-  - `d0` - Status request. Response should be prefixed by the `#` symbol. For example, if the timer is running, the response should be `#i2100036597`.
+  - `d0` - Status request, example of response `i2100036597`.
   - `i2100000000` - If the timer is running, 2 faults and 1 refusal will be scored on display (time is ignored).
   - `p0010000000` - If the timer is stopped, elimination will be scored on display (time is ignored).
   - `o0004200000` - Set or pause course walk time.
