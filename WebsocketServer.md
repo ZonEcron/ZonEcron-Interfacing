@@ -158,4 +158,4 @@ Messages that can be received by the timer:
   - `p0010000000` - If the timer is stopped, elimination will be scored on display (time is ignored).
   - `o0004200000` - Set or pause course walk time.
   - `g0004200000` - Start or resume course walk time.
-  - `p0000000000` - Reset. 
+  - `p0000000000` - Reset.
